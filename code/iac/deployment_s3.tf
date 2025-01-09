@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "data" {
-  # bucket is public
-  # bucket is not encrypted
+  # bucket allows public
   # bucket does not have access logs
   # bucket does not have versioning
   bucket        = "${local.resource_prefix.value}-data"
@@ -11,6 +10,14 @@ resource "aws_s3_object" "data_object" {
   bucket = aws_s3_bucket.data.id
   key    = "customer-master.xlsx"
   source = "resources/customer-master.xlsx"  
+}
+resource "aws_s3_bucket_public_access_block" "data" {
+  bucket = aws_s3_bucket.data.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 resource "aws_s3_bucket" "financials" {

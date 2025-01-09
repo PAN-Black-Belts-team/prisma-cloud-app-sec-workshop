@@ -165,13 +165,8 @@ cd prisma-cloud-app-sec-workshop/
 git status
 
 ```
-
 ![](images/git-clone.png)
-
-
 Great! Now we have some code to scan. Let's jump in...
-
-
 
 ## Scan with checkov
 
@@ -187,7 +182,8 @@ Let's start by scanning the entire `./code/iac` directory and viewing the result
 cd code/iac
 checkov -d .
 ```
-![](images/c9-checkov-d.png)
+
+![](images/vscode-checkov-d.png)
 
 Failed checks are returned containing the offending file and resource, the lines of code that triggered the policy, and a guide to fix the issue.
 
@@ -210,10 +206,10 @@ checkov -f simple_ec2.tf
 Policies can be optionally enforced or skipped with the `--check` and `--skip-check` flags. 
 
 ```
-checkov -f deployment_s3.tf --check CKV_AWS_18,CKV_AWS_52
+checkov -f deployment_s3.tf --check CKV_AWS_53
 ```
 ```
-checkov -f deployment_s3.tf --skip-check CKV_AWS_18,CKV_AWS_52
+checkov -f deployment_s3.tf --skip-check CKV_AWS_53
 ```
 
 Frameworks can also be selected or omitted for a particular scan.
@@ -274,7 +270,6 @@ vim custom-checks/check.yaml
 >[!TIP]
 > use `echo '$(file_contents)' > custom-checks/check.yaml` if formatting is an issue with vim.
 
-
 Save the file. Then run checkov with the `--external-checks-dir` to test the custom policy.
 
 ```
@@ -293,14 +288,11 @@ checkov -f simple_ec2.tf --external-checks-dir custom-checks
 >
 > Link to docs: [VScode extension](https://marketplace.visualstudio.com/items?itemName=PrismaCloud.prisma-cloud)
 
-Enabling checkov in an IDE provides real-time scan results and inline fix suggestions to developers as they create cloud infrastructure and applications.
+Enabling Prisma Cloud extension in an IDE provides real-time checkov scan results and inline fix suggestions to developers as they create cloud infrastructure and applications.
 
 ![](images/vscode-extension.png)
 
 ![](images/vscode-ide1.png)
-
-![](images/vscode-ide2.png)
-
 
 ## Integrate with CI/CD process - GitHub Actions
 Now that we are more familiar with some of checkov's basic functionality, let's see what it can do when integrated with other tools like GitHub Actions.
@@ -309,8 +301,7 @@ You can leverage GitHub Actions to run automated scans for every build or specif
 
 Let's begin by setting an action from the repository page, under the `Actions` tab. Then click on `set up a workflow yourself ->` to create a new action from scratch.
 
-
-<img src="images/gh-actions-new-workflow.png" width="800" height="300" /> 
+![](images/gh-actions-new-workflow.png)
 
 Name the file `checkov.yaml` and add the following code snippet into the editor.
 
@@ -382,6 +373,8 @@ Navigate to the `Security` tab in GitHub, the click `Code scanning` from the lef
 ![](images/ghas-overview.png)
 
 The security issues found by checkov are surfaced here for developers to get actionable feedback on the codebase they are working in without having to leave the platform. 
+> ** Note: ** <br>
+> [Github Code Scanning](https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning) is part of their advanced security, which is only available for Organizations
 
 ![](images/ghas-code-scanning-results.png)
 
@@ -395,8 +388,6 @@ The security issues found by checkov are surfaced here for developers to get act
 [Yor](yor.io) is another open source tool that can be used for tagging and tracing IaC resources from code to cloud. For example, yor can be used to add git metadata and a unique hash to a terraform resource; this can be used to better manage resource lifecycles, improve change management, and ultimately to help tie code defintions to runtime configurations.
 
 Create new file in the GitHub UI under the path `.github/workflows/yor.yaml`. 
-
-![](images/gh-new-file.png)
 
 Add the following code snippet:
 
@@ -425,13 +416,13 @@ jobs:
 
 This time, click `Commit changes...` at the top right, then select `Create a new branch` and click `Propose changes`. Click `Create pull request` on the next screen.
 
+![](images/gh-yor-file.png)
 
 Check that the action is running, queued, or finished under the `Actions` tab.
 
 More importanly, look at what yor updated by following the commit history and viewing any `.tf` file in the `code/iac` directory.
 
-<img src="images/yor-tags.png" width="600" height="500" /> 
-
+![](images/gh-yor-tags-pr.png)
 
 Notice the `yor_trace` tag? This can be used track "drift" between IaC definitons and runtime configurations.
 
@@ -481,17 +472,16 @@ Choose the `prisma-cloud-app-sec-workshop` from the list of repositories.
 
 Add a `Workspace Name` and click `Advanced options`.
 
-
-<img src="images/tfc-workspace1.png" width="500" height="600" /> 
+![](images/tfc-workspace1.png)
 
 In the `Terraform Working Directory` field, enter `/code/iac/build/`. Select `Only trigger runs when files in specified paths change`.
 
 
-<img src="images/tfc-workspace2.png" width="500" height="600" />
+![](images/tfc-workspace2.png)
 
 Leave the rest of the options as default and click `Create`.
 
-<img src="images/tfc-workspace3.png" width="500" height="400" />
+![](images/tfc-workspace3.png)
 
 Almost done. In order to deploy resources to AWS, we need to provide Terraform Cloud with AWS credentials. We need to add our credentials as workspace variables. Click `Continue to workspace overview` to do continue. 
 
@@ -499,7 +489,7 @@ Almost done. In order to deploy resources to AWS, we need to provide Terraform C
 
 Click `Configure variables`
 
-<img src="images/tfc-configure-variables.png" width="700" height="450" />
+![](images/tfc-configure-vars.png)
 
 Add variables for `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Ensure you select `Environment variables` for both and that `AWS_SECRET_ACCESS_KEY` is marked as `Sensitive`.
 
