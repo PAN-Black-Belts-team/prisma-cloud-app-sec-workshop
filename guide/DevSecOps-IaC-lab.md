@@ -446,7 +446,7 @@ Checkov can also be configured as a pre-commit hook. Read how to set up [here!](
 ## Integrate workflow with Terraform Cloud
 Let's continue by integrating our GitHub repository with Terraform Cloud. We will then use Terraform Cloud to deploy IaC resource to AWS.
 
-Navigate to [Terraform Cloud](app.terraform.io) and sign in / sign up. The community edition is all that is needed for this workshop.
+Navigate to [Terraform Cloud](https://app.terraform.io) and sign in / sign up. The community edition is all that is needed for this workshop.
 
 Once logged in, follow the prompt to set up a new organization.
 
@@ -468,7 +468,8 @@ Select `GitHub`, then `GitHub.com` from the dropdown. Authenticate and authorize
 
 Choose the `prisma-cloud-app-sec-workshop` from the list of repositories.
 
-![](images/tfc-add-repo.png)
+<!-- ![](images/tfc-add-repo.png) -->
+<img src= "images/tfc-add-repo.png" width="200" height="100" style="border: 2px solid grey;">
 
 Add a `Workspace Name` and click `Advanced options`.
 
@@ -580,7 +581,7 @@ Now let's see how we can leverage Prisma Cloud to make this all easier, gain mor
 ##
 # Section 2: Application Security with Prisma Cloud
 > [!NOTE]
-> *This portion of the workshop is intended to be view-only. Those with existing access to Prisma Cloud can follow along but is not recommended to onboard any of the workshop content into a production deployment of Prisma Cloud. Use this guide as an example and the content within for demonstration purposes only.*
+> *This portion of the workshop is intended to be view-only. Those with existing access to Prisma Cloud can follow along but is not recommended to onboard any of the workshop content into a production deployment of Prisma Cloud. Use this guide as an example and the content within for demonstration purposes only. Follow along if you have a sandbox Prisma Cloud tenant.*
 
 ## Welcome to Prisma Cloud
 ![](images/prisma-welcome.png)
@@ -678,10 +679,10 @@ In a terminal window run checkov against the entire `code` directory, now with a
 > Replace the `access_key_id`, `secret_key` and `prisma-api-url` with your values.
 
 ```
-checkov -d . --bc-api-key <access_key_id>::<secret_key> --repo-id prisma/appsec-workshop --prisma-api-url https://api4.prismacloud.io
+checkov -d . --repo-id prisma/appsec-workshop --bc-api-key <access_key_id>::<secret_key> --prisma-api-url https://api4.prismacloud.io
 ```
 
-![](images/c9-checkov-api-key.png)
+![](images/vscode-checkov-api-key.png)
 
 Notice how the results now contain a severity. There are some other features that come with Prisma Cloud (using an API key) as well... 
 
@@ -691,27 +692,25 @@ Return back to Prisma Cloud to view the results that checkov surfaced in the pla
 
 Let's add this same API key to the GitHub Action created earlier. Within your GitHub repository, go to **Settings > Secrets and variables** then select **Actions**. 
 
-![](images/GitHub-secrets.png)
+Click `New repository secret` then input the secret key `BC_API_KEY` and value of `<access_key_id>::<secret_key>`.
 
-Click `New repository secret` then input the secret value of `<access_key_id>::<secret_key>` pair.
+![](images/gh-secrets.png)
 
-![](images/github-repo-secret.png)
+![](images/gh-create-secret.png)
 
-![](images/github-create-secret.png)
-
-Edit `checkov.yaml`, remove comments for `api-key` and `PRISMA_API_URL`.
+Edit `checkov.yaml`, remove comments for `api-key` and `PRISMA_API_URL` (update your tenant URL if needed).
 
 ![](images/gh-edit-checkov.png)
 
 Commit directly to main branch.
 
-<img src="images/gh-commit-directly.png" width="375" height="400" />
+![](images/gh-commit-directly.png)
 
-Now check the results under **Security > Code scanning**. The same findings that displayed here earlier now with a **Severity** to sort and prioritze with.
+Now wait for the workflow finish running, then check the results under **Security > Code scanning**. The same findings that displayed here earlier now with a **Severity** to sort and prioritze with.
 
 ![](images/gh-security-results.png)
 
-Return again to Prisma Cloud to view the results that were sent to the the platform.
+Return to Prisma Cloud to view the results that were sent to the the platform.
 
 ![](images/prisma-gha-results.png)
 
@@ -740,19 +739,19 @@ Go to the Prisma Cloud console and navigate to **Settings > Connect Provider > C
 
 Under **CI/CD Runs**, choose **Terraform Cloud (Run Tasks)**.
 
-<img src="images/prisma-tfc-rt.png" width="600" height="500" />
+![](images/prisma-tfc-rt.png)
 
 Enter the API token generated in Terraform Cloud and click **Next**.
 
-<img src="images/prisma-tfc-token.png" width="600" height="500" />
+![](images/prisma-tfc-token.png)
 
 Select your **Organization**.
 
-<img src="images/prisma-tfc-org.png" width="600" height="500" />
+![](images/prisma-tfc-org.png)
 
 Select your **Workspace** and choose the **Run Stage** in which you want Prisma Cloud to execute a scan. `Pre-plan` will scan HCL code, `Post-plan` will scan the Terraform plan.out file.
 
-<img src="images/prisma-tfc-workspace.png" width="600" height="500" />
+![](images/prisma-tfc-workspace.png)
 
 > **⍰  Question** 
 >
@@ -760,12 +759,11 @@ Select your **Workspace** and choose the **Run Stage** in which you want Prisma 
 
 Once completed, click **Done**.
 
-<img src="images/prisma-tfc-done.png" width="600" height="500" />
+![](images/prisma-tfc-done.png)
 
 Return back to Terraform Cloud to view the integration. Go to your **Workspace** and click **Settings > Run Tasks**. 
 
 ![](images/tfc-run-task-created.png)
-
 
 
 ## GitHub Application
@@ -777,23 +775,21 @@ Next we will set up the Prisma Cloud GitHub Application which will perform easy-
 
 Go to Prisma Cloud and create a new integration under **Settings > Connect Provider > Code & Build Providers**.
 
-![](images/prisma-code-build-providers.png)
-
 Under **Code Repositories**, select **GitHub**. 
 
-<img src="images/prisma-gh-app.png" width="600" height="500" />
+![](images/prisma-gh-app.png)
 
 Follow the install wizard and **Authorize** your GitHub account.
 
-<img src="images/prisma-gh-auth.png" width="600" height="500" />
+![](images/prisma-gh-auth.png)
 
 Select the repositories you would like to provide access to and click **Install & Authorize**.
 
-<img src="images/gh-select-repos.png" width="400" height="700" />
+![](images/gh-select-repos.png)
 
 Select the target repositories to scan now accessible from the Prisma Cloud wizard, then click **Next**.
 
-<img src="images/prisma-select-repos.png" width="600" height="500" />
+![](images/prisma-select-repos.png)
 
 Click **Done** once completed. Navigate to **Settings > Providers > Repositories** to view the onboarded repo(s). 
 
@@ -805,15 +801,18 @@ Also navigate to **Application Security > Projects** to view the results coming 
 
 ## Submit a Pull Request 2.0
 
-Lets push a change to test the integration. Navigate to GitHub and make a change to the s3 resource deployed earlier under `code/build/s3.tf`.
+Lets push a change to test the integration. Navigate to GitHub and make a change to the s3 resource deployed earlier under `code/iac/build/s3.tf`.
 
-
-
-
-Add the following line of code to the s3 resource definition. Then click **Commit changes...** once complete.
+Add the following lines of code to the terraform code. Then click **Commit changes...** once complete.
 
 ```
-acl = "public-read-write"
+resource "aws_s3_bucket_acl" "dev_s3" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.dev_s3
+  ]
+  bucket = aws_s3_bucket.dev_s3.id
+  acl    = "public-read-write"
+}
 ```
 
 ![](images/gh-edit-s3.png)
@@ -821,7 +820,7 @@ acl = "public-read-write"
 
 Create a new branch and click **Propose changes**.
 
-<img src="images/gh-propose-changes.png" width="450" height="525" />
+![](images/gh-propose-changes.png)
 
 On the next page, review the diff then click **Create pull request**. Once gain, click **Create pull request** to open the pull request.
 
