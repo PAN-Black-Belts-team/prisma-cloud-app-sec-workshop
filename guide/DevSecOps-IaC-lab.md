@@ -28,7 +28,7 @@ This guide provides step-by-step instructions to integrate **Prisma Cloud** (and
   - [Scan with checkov](#scan-with-checkov)
   - [Custom Policies](#custom-policies)
   - [IDE plugin](#ide-plugin)
-  - [Integrate with GitHub Actions](#integrate-with-GitHub-actions)
+  - [Integrate with GitHub Actions](#integrate-with-CI-process)
   - [View results in GitHub Security](#view-results-in-GitHub-secuirty)
   - [Tag and Trace with yor](#tag-and-trace-with-yor)
   - [Branch Protection Rules](#branch-protection-rules)
@@ -294,8 +294,8 @@ Enabling Prisma Cloud extension in an IDE provides real-time checkov scan result
 
 ![](images/vscode-ide1.png)
 
-## Integrate with CI/CD process - GitHub Actions
-Now that we are more familiar with some of checkov's basic functionality, let's see what it can do when integrated with other tools like GitHub Actions.
+## Integrate with CI process 
+Now that we are more familiar with some of checkov's basic functionality, let's see what it can do when integrated with other CI/CD tools like GitHub Actions.
 
 You can leverage GitHub Actions to run automated scans for every build or specific builds, such as the ones that merge into the master branch. This action can alert on misconfigurations, or block code from being merged if certain policies are violated. Results can also be sent to Prisma Cloud and other sources for further review and remediation steps.
 
@@ -806,12 +806,13 @@ Lets push a change to test the integration. Navigate to GitHub and make a change
 Add the following lines of code to the terraform code. Then click **Commit changes...** once complete.
 
 ```
-resource "aws_s3_bucket_acl" "dev_s3" {
-  depends_on = [
-    aws_s3_bucket_ownership_controls.dev_s3
-  ]
+resource "aws_s3_bucket_public_access_block" "dev_s3" {
   bucket = aws_s3_bucket.dev_s3.id
-  acl    = "public-read-write"
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 ```
 
@@ -832,16 +833,7 @@ Let the checks run against the pull request. Prisma Cloud can review pull reques
  When ready, click **Merge pull request** bypassing branch protection rules if still enabled.
 
 
-Now that the change has been merged, navigate back to Terraform Cloud to view the pipeline running.
-
-![](images/tfc-plan-running.png)
-
-
-Check the **Post-plan** stage and view the results of the Prisma Cloud scan.
-
-![](images/tfc-post-plan.png)
-
-Leave this as is for now. We will soon fix the error and retrigger the pipeline.
+Now that the change has been merged, we can check the scan results in prisma cloud now.
 
 
 ## View scan results in Prisma Cloud
@@ -851,14 +843,9 @@ Navigate to **Application Security > Projects > Overview** to view findings for 
 
 ![](images/prisma-appsec-projects.png)
 
-View relevant CI/CD Risks **Application Security > CI/CD Risks**:
+View Pull Request scan results under **Application Security > Projects > VCS Pull Requests**:
 
-![](images/prisma-cicd-risks.png)
-
-Get a full SBOM analysis under **Application Security > SBOM**:
-
-![](images/prisma-sbom.png)
-
+![](images/prisma-appsec-pr.png)
 
 Take a look at **Dashboards > Code Security** to get top-level reports.
 
@@ -883,9 +870,8 @@ These can be adjusted as a top-down policy or exceptions can be created for spec
 ![](images/prisma-enforcement-rules3.png)
 
 
-
 ## Issue a PR-Fix
-Lets create a pull request from the Prisma Cloud console to apply a code fix. Navigate to **Application Security > Projects > Overview IaC Misconfiguration** then find the `dev_s3` bucket with the public access violations.
+Lets create a pull request from the Prisma Cloud console to apply a code fix. Navigate to **Application Security > Projects > Overview IaC Misconfiguration** then find the `web_host` ec2 instance not configured with IMDSv2.
 
 ![](images/prisma-pr-fix1.png)
 
@@ -903,12 +889,6 @@ Drill into the pull request and inspect the file changes under the **Files chang
 
 Go back to the **Coversation** tab and click **Merge the pull request** at the bottom to check this code into the main branch.
 
-![](images/gh-merge-pr-fix.png)
-
-Check Terraform Cloud to view the plan succesfully run. No need to apply this run as we will use the earlier deployment for our next example.
-
-![](images/tfc-pr-fix.png)
-
 
 ## Drift Detection
 > [!NOTE]
@@ -924,7 +904,7 @@ We will use the S3 bucket deployed earlier to simulate drift in a resource confi
 > By default Prisma Cloud performs full resource scans on an hourly interval. 
 
 
-Let's first examine the policies associated with drift. Go to **Governance > Overview** and serach for `Traced resources are manually modified`. Notice the policies for each CSP. Ensure the policy for AWS is enabled.
+Let's first examine the policies associated with drift. Go to **Governance > Overview** and search for word `Traced`. Notice the policies for each CSP. Ensure the policy for AWS is enabled.
 
 ![](images/prisma-traced-resource-policies.png)
 
