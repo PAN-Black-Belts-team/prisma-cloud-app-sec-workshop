@@ -894,7 +894,7 @@ Go back to the **Coversation** tab and click **Merge the pull request** at the b
 > [!NOTE]
 > Link to docs: [Setup Drift Detection](https://docs.prismacloud.io/en/classic/appsec-admin-guide/get-started/drift-detection)
 
-In this final section, we will use the pipeline we built to detect drift. Drift occurs when infrastructure running in the cloud becomes configured differntly from what was originally defined in code.
+In this section, we will use the pipeline we built to detect drift. Drift occurs when infrastructure running in the cloud becomes configured differntly from what was originally defined in code.
 
 This usually happens during a major incident, where DevOps and SRE teams make manual changes to quickly solve a problem, such as opening up ports to larger CIDR blocks or turning off HTTPS to find the problem. Sometimes lack of access and/or familiarity with IaC/CICD makes fixing an issue directly in the cloud easier than fixing in code and redeploying. If these aren’t reverted, they present security issues and it weakens the benefits of using IaC.
 
@@ -922,7 +922,36 @@ On the next scan Prisma Cloud will detect this change and notify users that a re
 
 Prisma Cloud provides the option to revert the change via the same pull request mechanism we just performed which would trigger a pipeline run and patch the resource.
 
+## Platform Custom Build Policies
+> [!NOTE]
+> Link to docs: [Custom Build Policies](https://docs.prismacloud.io/en/enterprise-edition/content-collections/governance/custom-build-policies/custom-build-policies)
 
+There are 2 editors in the platform console to create policy definition. We will use code editor here to create a custom policy to check if a required resource tag is present.
+
+Go to **Governance**  and click on **Add Policy** button and select **Config**
+![](images/prisma-add-policy.png)
+
+Fill in **Policy Name**, Specify **Policy Subtype** as **Build** and select **Severity**. Thec click Next.
+![](images/prisma-custom-config-policy1.png)
+
+In the **Create query** page, add the policy definition in Yaml format from [code/iac/custom-checks/check-tags-platform.yaml](../code/iac/custom-checks/check-tags-platform.yaml) to the code editor. Then click **Scan** to test the policy.
+
+![](images/prisma-custom-config-policy2.png)
+
+Test results will show a subset of resources that are violating the policy. You can click on each resource to check the resource configuration to validate. 
+
+Nest we click on **Validate and Next** to next page to specify Compliance Standards if needed. 
+
+![](images/prisma-custom-config-policy3.png)
+
+Then to Remediation page to add remediation guidance which is optional.
+![](images/prisma-custom-config-policy4.png)
+
+After submitting the policy, we can find the policy in the Governance page. 
+
+![](images/prisma-custom-config-policy5.png)
+
+The onboarded resources will be scanned against the new policy on the next scheduled scan. The same policy can be applied to any stages of your SDLC process.
 
 # Wrapping Up
 Congrats! In this workshop, we didn’t just learn how to identify and automate fixing misconfigurations — we learned how to bridge the gaps between Development, DevOps, and Cloud Security. We are now equipped with full visibility, guardrails, and remediation capabilities across the development lifecycle. We also learned how important and easy it is to make security accessible to our engineering teams.
