@@ -48,6 +48,7 @@ This guide provides step-by-step instructions to integrate **Prisma Cloud** (and
   - [View scan results in Prisma Cloud](#view-scan-results-in-prisma-cloud)
   - [Issue a PR Fix](#issue-a-pr-fix)
   - [Drift Detection](#drift-detection)
+  - [Platform Custom Build Policies](#platform-custom-build-policies)
 
 - [Wrapping Up](#wrapping-up)
 
