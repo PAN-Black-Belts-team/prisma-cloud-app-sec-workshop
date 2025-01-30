@@ -26,7 +26,7 @@ This guide provides step-by-step instructions to integrate **Prisma Cloud** (and
   - [Install checkov](#install-checkov)
   - [Fork and clone target repository](#fork-and-clone-target-repository)
   - [Scan with checkov](#scan-with-checkov)
-  - [Custom Policies](#custom-policies)
+  - [Custom Policies](#checkov-custom-policies)
   - [IDE plugin](#ide-plugin)
   - [Integrate with GitHub Actions](#integrate-with-CI-process)
   - [View results in GitHub Security](#view-results-in-GitHub-secuirty)
