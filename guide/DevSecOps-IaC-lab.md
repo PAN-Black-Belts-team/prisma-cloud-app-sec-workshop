@@ -935,7 +935,7 @@ Go to **Governance**  and click on **Add Policy** button and select **Config**
 Fill in **Policy Name**, Specify **Policy Subtype** as **Build** and select **Severity**. Thec click Next.
 ![](images/prisma-custom-config-policy1.png)
 
-In the **Create query** page, add the policy definition in Yaml format from [code/iac/custom-checks/check-tags-platform.yaml](../code/iac/custom-checks/check-tags-platform.yaml) to the code editor. Then click **Scan** to test the policy.
+In the **Create query** page, add the policy definition in Yaml format from [code/iac/custom-policy/check-tags-platform.yaml](../code/iac/custom-policy/check-tags-platform.yaml) to the code editor. Then click **Scan** to test the policy.
 
 ![](images/prisma-custom-config-policy2.png)
 
